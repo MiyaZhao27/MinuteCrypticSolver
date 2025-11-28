@@ -28,6 +28,7 @@ def generate_permutations(word):
     return perms
 
 
+
 def anagrams_of(word):
     """
     Return all unique anagrams of the fodder word (no itertools).
