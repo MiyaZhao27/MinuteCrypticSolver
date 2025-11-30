@@ -10,8 +10,26 @@ from sklearn.metrics import classification_report, confusion_matrix
 # import data
 df = pd.read_csv("logistic_data.csv")
 
-# create features, right now just length
-X = df[["length"]].values.astype(float)
+
+
+
+
+# FEATURES HERE!!!!
+
+# Fodder Length
+## NEW
+
+df['fodder_length'] = df['fodder'].apply(lambda s: len(s) if isinstance(s, str) else 0)
+
+df["fodder_length"] = (df["fodder"]
+    .astype(str)
+    .str.replace(r"[^A-Za-z]", "", regex=True) 
+    .str.len()
+)
+
+
+# Length of Clue and Fodder
+X = df[["length", "fodder_length"]].values.astype(float)
 
 # label categories
 y_raw = df["category"].values
@@ -54,12 +72,13 @@ print(confusion_matrix(y_test, y_pred))
 # have it spit out the categrory for solver
 
 
-def predict_category_from_length(L: float):
+def predict_category_from_length(L: float, F: float):
     """
-    Predict the cryptic clue category using ONLY the length feature.
+    Predict the cryptic clue category using the length and Fodder Length feature.
     L = answer length (float or int)
+    F = Fodder length (Float)
     """
-    x = np.array([[float(L)]])  # can add ore features here
+    x = np.array([[float(L), float(F)]])
     x_scaled = scaler.transform(x)
 
     pred_id = logreg.predict(x_scaled)[0]
