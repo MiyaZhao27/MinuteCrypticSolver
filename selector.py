@@ -1,139 +1,173 @@
-from word2vec import get_model
-import re
+from nltk.corpus import words
+import nltk
+nltk.download('words')
 
-model = get_model()
-
-anchors = {
-    "FIRST": "first",
-    "LAST": "last",
-    "MIDDLE": "middle",
-    "ODD": "odd",
-    "EVEN": "even",
-    "INTERMITTENT": "skip",
-    "NTH": "nth"  
-}
-NUMBER_WORDS = {
-    "one": 1, "first": 1, "once": 1, "primary": 1, "single": 1,
-    "two": 2, "second": 2, "twice": 2, "binary": 2,
-    "three": 3, "third": 3, "triple": 3, "tertiary": 3,
-    "four": 4, "fourth": 4, "quadrant": 4, "quaternary": 4,
-    "five": 5, "fifth": 5, "quinary": 5,
-    "six": 6, "sixth": 6,
-    "seven": 7, "seventh": 7,
-    "eight": 8, "eighth": 8,
-    "nine": 9, "ninth": 9,
-    "ten": 10, "tenth": 10
-}
+english_words = set(w.lower() for w in words.words())
 
 
-def resolve_canonical(indicator):
+def letters_from_words(words):
+    """Flatten list of words into a list of characters."""
+    chars = []
+    for w in words:
+        chars.extend(list(w))
+    return chars
+
+# basic word wise selectors like first letters, last letters, etc
+
+
+def first_letters(words):
+    return "".join(w[0] for w in words if len(w) > 0)
+
+
+def last_letters(words):
+    return "".join(w[-1] for w in words if len(w) > 0)
+
+
+def middle_letters(words):
+    return "".join(w[len(w)//2] for w in words if len(w) >= 3)
+
+
+# nth letter selectors
+
+def nth_letters(chars, n):
+    return "".join(chars[0::n])
+
+
+def odd_letters(chars):
+    return "".join(chars[0::2])
+
+
+def even_letters(chars):
+    return "".join(chars[1::2])
+
+# half words
+
+
+def first_half(w):
+    return w[: len(w)//2]
+
+
+def second_half(w):
+    return w[len(w)//2:]
+
+
+# substrings
+
+def word_substrings(w):
+    subs = []
+    for i in range(len(w)):
+        for j in range(i+1, len(w)+1):
+            subs.append(w[i:j])
+    return subs
+
+
+def string_substrings(s):
+    subs = []
+    for i in range(len(s)):
+        for j in range(i+1, len(s)+1):
+            subs.append(s[i:j])
+    return subs
+
+# sometimes you have to take the halves of two words and frakenstein them
+
+
+def cross_half_combinations(words):
+    """Combine first/second halves across all words."""
+    halves = []
+    fh = [first_half(w) for w in words if len(w) >= 2]
+    sh = [second_half(w) for w in words if len(w) >= 2]
+
+    for a in range(len(words)):
+        for b in range(len(words)):
+            A_fh = first_half(words[a])
+            A_sh = second_half(words[a])
+            B_fh = first_half(words[b])
+            B_sh = second_half(words[b])
+
+            halves.extend([
+                A_fh + B_fh,
+                A_fh + B_sh,
+                A_sh + B_fh,
+                A_sh + B_sh
+            ])
+
+    return halves
+
+# combine them all!
+
+
+def generate_all_selectors(fodder, length=None):
     """
-    Use word2vec similarity to guess which canonical selector the clue means.
+    Generate ALL selector possibilities:
+    - word-wise (first/last/middle letters)
+    - string-wise (odd/even/every-nth)
+    - half-word (first half / second half)
+    - cross-half combinations
+    - all substrings of each word
+    - all substrings of the full string
     """
-    scores = {}
-    for canon, anchor in anchors.items():
-        try:
-            scores[canon] = model.similarity(indicator.lower(), anchor)
-        except KeyError:
-            scores[canon] = -1
-            
-    best = max(scores, key=scores.get)
-    return best
 
-def detect_n_from_indicator(indicator, model):
-    """Try to determine N if the selector is NTH."""
-    indicator = indicator.lower()
-
-    m = re.search(r"\d+", indicator)
-    if m:
-        return int(m.group(0))
-
-    # textual numbers
-    for word, n in NUMBER_WORDS.items():
-        if word in indicator:
-            return n
-
-    best_n = None
-    best_sim = -1
-    for word, n in NUMBER_WORDS.items():
-        try:
-            sim = model.similarity(indicator, word)
-        except KeyError:
-            sim = -1
-        if sim > best_sim:
-            best_sim = sim
-            best_n = n
-
-    return best_n 
-
-
-def apply_indicator(indicator, fodder, length=None, model=None):
-    """
-    Main selection logic — including W2V-driven selector detection.
-    """
     words = fodder.split()
-    combined = "".join(words)
+    chars = letters_from_words(words)
+    combined = "".join(chars)
 
-    # Determine canonical selector rule using Word2Vec
-    if model is None:
-        raise ValueError("You must supply a Word2Vec model.")
+    candidates = []
 
-    canon = resolve_canonical(indicator, model)
+    # word-level selectors
+    candidates.append(first_letters(words))
+    candidates.append(last_letters(words))
+    candidates.append(middle_letters(words))
 
-    # ================== all basic ones Eliza-Style =============
-    if canon == "FIRST":
-        result = [w[0] for w in words]
-        return "".join(result[:length]) if length else "".join(result)
+    # string-level selectors
+    candidates.append(odd_letters(chars))
+    candidates.append(even_letters(chars))
 
-    if canon == "LAST":
-        result = [w[-1] for w in words]
-        return "".join(result[:length]) if length else "".join(result)
+    for n in range(2, max(3, len(chars) + 1)):
+        candidates.append(nth_letters(chars, n))
 
-    if canon == "MIDDLE":
-        result = [w[len(w)//2] for w in words if len(w) > 2]
-        return "".join(result[:length]) if length else "".join(result)
+    # half-word selectors
+    for w in words:
+        if len(w) >= 2:
+            candidates.append(first_half(w))
+            candidates.append(second_half(w))
 
-    if canon == "EVEN":
-        result = []
-        for w in words:
-            for c in w[1::2]:
-                result.append(c)
-                if length and len(result) == length:
-                    return "".join(result)
-        return "".join(result)
+    # cross-half combinations
+    candidates.extend(cross_half_combinations(words))
 
-    if canon == "ODD":
-        result = []
-        for w in words:
-            for c in w[0::2]:
-                result.append(c)
-                if length and len(result) == length:
-                    return "".join(result)
-        return "".join(result)
+    # substring selectors for each word
+    for w in words:
+        candidates.extend(word_substrings(w))
 
-    if canon == "INTERMITTENT":
-        result = []
-        for w in words:
-            for c in w[0::2]:
-                result.append(c)
-                if length and len(result) == length:
-                    return "".join(result)
-        return "".join(result)
+    # substring selectors for entire string
+    candidates.extend(string_substrings(combined))
 
-    if canon == "NTH":
-        N = detect_n_from_indicator(indicator, model)
-        ## in-case
-        if N is None: 
-            return combined if length is None else combined[:length]
+    # accomodate for the reverse case
+    rev_candidates = [c[::-1] for c in candidates]
+    candidates.extend(rev_candidates)
 
-        result = []
-        for w in words:
-            for c in w[::N]:
-                result.append(c)
-                if length and len(result) == length:
-                    return "".join(result)
-        return "".join(result)
-    
-    
-### in-case --> use word2vec to generate list of words similar to definition and then choose based on letter length?
+# remove dups
+    candidates = [c for c in candidates if c]
 
+    if length is not None:
+        candidates = [c for c in candidates if len(c) == length]
+
+    # remove duplicates
+    candidates = list(dict.fromkeys(candidates))
+
+    return candidates
+
+
+def filter_real_words(candidates):
+    """
+    input: candidates
+    output: the n-candidates that are valid english words
+    """
+    real_words = set()
+
+    for c in candidates:
+        cleaned = c.lower()
+
+        if cleaned in english_words:
+            real_words.add(cleaned)
+
+    return real_words
