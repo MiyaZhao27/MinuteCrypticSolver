@@ -1,71 +1,110 @@
-from hidden import ngrams_of, filter_real_words
-from anagram import anagrams_of, filter_real_words
-from selector import generate_all_selectors, filter_real_words
+from hidden import ngrams_of, filter_real_words as filter_hidden_words
+from anagram import anagrams_of, filter_real_words as filter_anagram_words
+from selector import generate_all_selectors, filter_real_words as filter_selector_words
+
+import numpy as np
+from word2vec import get_model
+
+model = get_model()
+
+
+def cosine_sim(v1, v2):
+    if v1 is None or v2 is None:
+        return 0.0
+    denom = np.linalg.norm(v1) * np.linalg.norm(v2)
+    if denom == 0:
+        return 0.0
+    return float(np.dot(v1, v2) / denom)
+
+
+def get_vec(word):
+    word = word.lower().strip()
+    if word in model.key_to_index:
+        return model[word]
+    return None
+
+
+def avg_vec(text):
+    tokens = text.lower().strip().split()
+    vecs = [get_vec(t) for t in tokens if get_vec(t) is not None]
+    if not vecs:
+        return None
+    return np.mean(vecs, axis=0)
+
+
+def best_definition_match(definition, candidates):
+    dvec = avg_vec(definition)
+    if dvec is None:
+        return None, {}
+
+    scores = {w: cosine_sim(dvec, get_vec(w)) for w in candidates}
+    best_word = max(scores, key=scores.get)
+    return best_word, scores
 
 
 def run_anagram_algorithm(fodder, length):
-    all_anagrams = anagrams_of(fodder)
-    real_words = filter_real_words(all_anagrams)
-
-    def filter_by_length(words, length):
-        return {w for w in words if len(w) == length}
-
-    real_words = filter_by_length(real_words, length)
-
-    if len(real_words) == 0:
-        return f"No anagram English words of length {length} found."
-
-    return f"Anagram English words of length {length}: {real_words}"
+    words = anagrams_of(fodder)
+    real = filter_anagram_words(words)
+    return {w for w in real if len(w) == length}
 
 
 def run_hidden_algorithm(fodder, length):
-    all_ngrams = ngrams_of(length, fodder)
-    real_words = filter_real_words(all_ngrams)
-
-    if len(real_words) == 0:
-        return f"No hidden English words of length {length} found."
-
-    return f"Hidden English words of length {length}: {real_words}"
+    return set(filter_hidden_words(ngrams_of(length, fodder)))
 
 
 def run_selector_algorithm(fodder, length):
-    candidates = generate_all_selectors(fodder, length)
-    real = filter_real_words(candidates)
-
-    if len(real) == 0:
-        return f"No selector-based English words of length {length} found."
-
-    return f"Selector English words of length {length}: {real}"
+    return set(filter_selector_words(generate_all_selectors(fodder, length)))
 
 
 def solve_clue():
-    print("=== Minute Cryptic Decrypter ===\n")
+    print("=== Minute Cryptic Decrypter + Word2Vec Meaning Matcher ===\n")
 
-    fodder = input("Enter the fodder words: ")
+    fodder = input("Enter the fodder: ").strip()
 
     while True:
         try:
-            length = int(input("Enter the solution length: "))
+            length = int(input("Enter the answer length: "))
             break
         except:
-            print("Length must be an integer. Try again.")
+            print("Length must be an integer.")
 
-    category = input(
-        "Enter the category (anagram / hidden / selector): ").lower()
+    category = input("Enter category (anagram / hidden / selector): ").lower()
 
-    print(f"\nUsing category: {category}")
-
+    # Generate candidates
     if "anagram" in category:
-        print(run_anagram_algorithm(fodder, length))
-
+        candidates = run_anagram_algorithm(fodder, length)
     elif "hidden" in category:
-        print(run_hidden_algorithm(fodder, length))
-
+        candidates = run_hidden_algorithm(fodder, length)
     elif "selector" in category:
-        print(run_selector_algorithm(fodder, length))
-
+        candidates = run_selector_algorithm(fodder, length)
     else:
-        print("Unknown category — sorry.")
+        print("Unknown category.")
+        return
+
+    # NONE FOUND
+    if not candidates:
+        print("No English words found.")
+        return
+
+    # EXACTLY ONE → DONE
+    if len(candidates) == 1:
+        print("Solution:", list(candidates)[0])
+        return
+
+    # MULTIPLE → ask for definition
+    print(f"\nMultiple candidate words: {candidates}")
+    definition = input("Enter the DEFINITION part of the clue: ").strip()
+
+    best, scores = best_definition_match(definition, candidates)
+
+    print("\n=== Word2Vec Scoring ===")
+    print(f"Definition: {definition}")
+    print(f"Best Match: {best}\n")
+
+    for w, s in sorted(scores.items(), key=lambda x: -x[1]):
+        print(f"{w:<15} {s:.4f}")
+
+    print("\nFinal Answer:", best)
 
 
 if __name__ == "__main__":

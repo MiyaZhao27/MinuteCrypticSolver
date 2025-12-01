@@ -1,3 +1,4 @@
+from word2vec import get_model
 import sys
 import numpy as np
 import pandas as pd
@@ -13,27 +14,36 @@ df = pd.read_csv("logistic_data.csv")
 
 # WORD2VEC STUFF
 
-# from word2vec import get_model
-# model = get_model()
+model = get_model()
 
-# ANAGRAM_WORDS = ["erupt", "shake", "mix", "confuse", "stir"]
-# HIDDEN_WORDS = ["inside", "within", "amid", "concealed"]
-# SELECTOR_WORDS = ["take", "odd", "even", "end", "middle", "first", "second", "third", "fourth"]
 
-# def avg_similarity(word, word_list):
-#     sims = []
-#     for w in word_list:
-#         if word in model and w in model:
-#             sims.append(model.similarity(word, w))
-#     if sims:
-#         return np.mean(sims)
-#     else:
-#         return 0
+def cosine_sim(v1, v2):
+    if v1 is None or v2 is None:
+        return 0.0
+    denom = np.linalg.norm(v1) * np.linalg.norm(v2)
+    if denom == 0:
+        return 0.0
+    return float(np.dot(v1, v2) / denom)
 
-# df["sim_anagram"] = df["indicator"].apply(lambda x: avg_similarity(str(x).lower(), ANAGRAM_WORDS))
-# df["sim_reversal"] = df["indicator"].apply(lambda x: avg_similarity(str(x).lower(), REVERSAL_WORDS))   # REMOVED
-# df["sim_hidden"] = df["indicator"].apply(lambda x: avg_similarity(str(x).lower(), HIDDEN_WORDS))
-# df["sim_selector"] = df["indicator"].apply(lambda x: avg_similarity(str(x).lower(), SELECTOR_WORDS))
+
+def get_vec(word):
+    word = word.lower()
+    if word in model.key_to_index:
+        return model[word]
+    return None
+
+
+ANAGRAM_WORDS = ["mix", "destroy", "strange", "tampering", "exploded", "shake"]
+HIDDEN_WORDS = ["conceals", "hides", "within", "held", "absorbed", "taken"]
+SELECTOR_WORDS = ["odd", "even", "head", "tail", "borders", "alternate"]
+
+
+def avg_similarity(indicator, word_list):
+    ivec = get_vec(indicator.lower())
+    sims = []
+    for w in word_list:
+        sims.append(cosine_sim(ivec, get_vec(w)))
+    return float(np.mean(sims)) if sims else 0.0
 
 
 # fodder length feature
@@ -47,14 +57,23 @@ df["fodder_length"] = (
 # Number of words in fodder
 df["fodder_word_count"] = df["fodder"].astype(str).str.split().apply(len)
 
+# word2vec features
+df["w2v_anagram"] = df["indicator"].apply(
+    lambda x: avg_similarity(str(x), ANAGRAM_WORDS))
+df["w2v_hidden"] = df["indicator"].apply(
+    lambda x: avg_similarity(str(x), HIDDEN_WORDS))
+df["w2v_selector"] = df["indicator"].apply(
+    lambda x: avg_similarity(str(x), SELECTOR_WORDS))
+
+
 # feature matrix
 X = df[[
     "length",
     "fodder_length",
-    "fodder_word_count"
-    # "sim_anagram",     # if word2vec comes back
-    # "sim_hidden",
-    # "sim_selector"
+    "fodder_word_count",
+    "w2v_anagram",
+    "w2v_hidden",
+    "w2v_selector"
 ]].values.astype(float)
 
 
@@ -97,15 +116,17 @@ print(confusion_matrix(y_test, y_pred))
 
 
 def extract_features(clue, indicator, length, fodder, definition):
+
     fodder_clean_len = len("".join([c for c in str(fodder) if c.isalpha()]))
 
-    features = [
+    return np.array([[
         float(length),
         float(fodder_clean_len),
         len(str(fodder).split()),
-    ]
-
-    return np.array(features).reshape(1, -1)
+        avg_similarity(indicator, ANAGRAM_WORDS),
+        avg_similarity(indicator, HIDDEN_WORDS),
+        avg_similarity(indicator, SELECTOR_WORDS)
+    ]])
 
 # final predictor
 
