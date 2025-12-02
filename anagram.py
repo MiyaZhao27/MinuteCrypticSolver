@@ -55,11 +55,11 @@ def do_anagram(word):
     real_anas = filter_real_words(perms)
 
     # +1 letter variants
-    extended_candidates = extend_with_added_letters(real_anas)
+    extended_candidates = extend_with_added_letters(perms)
 
     # filter extended ones
     plus_one_real = filter_real_words(extended_candidates)
-    
+
     # combine into one result
     combined = real_anas.union(plus_one_real)
 
