@@ -1,9 +1,9 @@
 from hidden import ngrams_of, filter_real_words as filter_hidden_words
-from anagram import anagrams_of, filter_real_words as filter_anagram_words
+from anagram import do_anagram
 from selector import generate_all_selectors, filter_real_words as filter_selector_words
 
 import numpy as np
-from word2vec import get_model
+from glove import get_model
 
 model = get_model()
 
@@ -43,9 +43,8 @@ def best_definition_match(definition, candidates):
 
 
 def run_anagram_algorithm(fodder, length):
-    words = anagrams_of(fodder)
-    real = filter_anagram_words(words)
-    return {w for w in real if len(w) == length}
+    words = do_anagram(fodder)
+    return {w for w in words if len(w) == length}
 
 
 def run_hidden_algorithm(fodder, length):
@@ -57,7 +56,7 @@ def run_selector_algorithm(fodder, length):
 
 
 def solve_clue():
-    print("=== Minute Cryptic Decrypter + Word2Vec Meaning Matcher ===\n")
+    print("=== Minute Cryptic Decrypter + Glove Meaning Matcher ===\n")
 
     fodder = input("Enter the fodder: ").strip()
 
@@ -97,7 +96,7 @@ def solve_clue():
 
     best, scores = best_definition_match(definition, candidates)
 
-    print("\n=== Word2Vec Scoring ===")
+    print("\n=== Glove Scoring ===")
     print(f"Definition: {definition}")
     print(f"Best Match: {best}\n")
 
