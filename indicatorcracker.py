@@ -105,7 +105,7 @@ y = label_encoder.fit_transform(y_raw)
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y,
-    test_size=0.4,
+    test_size=0.3,
     stratify=y,
     random_state=42
 )
