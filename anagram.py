@@ -1,7 +1,7 @@
 from wordfreq import top_n_list
 import string
 
-english_words = set(top_n_list("en", 100000))
+english_words = set(top_n_list("en", 1000000))
 
 def generate_permutations(word):
     word = word.lower()
