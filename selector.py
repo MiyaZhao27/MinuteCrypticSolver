@@ -11,6 +11,8 @@ def letters_from_words(words):
     return chars
 
 # basic word wise selectors like first letters, last letters, etc
+# We first created functions that would attempt to solve selector
+# puzzles regardless of the specific selector word (first, last, etc)
 
 def first_letters(words):
     """Takes the first character of every word"""
@@ -28,12 +30,12 @@ def middle_letters(words):
 
 # nth letter selectors
 
-
+# wanted to account for clues that said "second", "third", etc
 def nth_letters(chars, n):
     """Returns a string composed of every nth character (starting at index 0)"""
     return "".join(chars[0::n])
 
-
+# also wanted to account for clues that said even, odd, or intermittent
 def odd_letters(chars):
     """Returns a string composed of every odd character"""
     return "".join(chars[0::2])
@@ -44,7 +46,7 @@ def even_letters(chars):
     return "".join(chars[1::2])
 
 # half words
-
+# some more difficult puzzles took half of a word so we attempted to take halves and even combine them
 
 def first_half(w):
     """Returns the first half of a word"""
@@ -104,7 +106,7 @@ def cross_half_combinations(words):
 
 # combine them all!
 
-
+# finally we generate all the different selector types, 
 def generate_all_selectors(fodder, length=None):
     """
     Generate ALL selector possibilities:
@@ -147,7 +149,7 @@ def generate_all_selectors(fodder, length=None):
         candidates.extend(word_substrings(w))
     candidates.extend(string_substrings(combined))
 
-    # accomodate for the reverse case
+    # accomodate for the reversal case
     rev_candidates = [c[::-1] for c in candidates]
     candidates.extend(rev_candidates)
 
@@ -161,7 +163,7 @@ def generate_all_selectors(fodder, length=None):
 
     return candidates
 
-
+# then we filtered based on if they are valid English words, returning all valid candidates
 def filter_real_words(candidates):
     """
     input: candidates
