@@ -1,0 +1,40 @@
+clue,true_category,predicted_category,prob_Anagrams,prob_Hiddens,prob_Selectors
+Deliver extremely popular puzzling video,Anagrams,Anagrams,0.9529633708030362,0.03718728443944552,0.009849344757518372
+Even nerdy guys can be badass,Selectors,Selectors,0.014227915759002487,0.07145417732514046,0.9143179069158571
+Changes actress!?,Anagrams,Anagrams,0.7639313189081447,0.09953384054999266,0.1365348405418626
+Provide a lipstick sample for model,Hiddens,Selectors,0.005215700981878553,0.269432498518728,0.7253518004993934
+Sister's half brothers,Selectors,Selectors,0.1272905377913796,0.4206269510173123,0.4520825111913082
+Intermittent pain in body to irritate,Selectors,Selectors,0.15151018273013295,0.3092986013225614,0.5391912159473057
+Temporary contract in government sector,Hiddens,Hiddens,0.010118729346290553,0.6579655005345318,0.3319157701191776
+Dank memes on Instagram sent to principals,Selectors,Selectors,0.0011508205094327834,0.2639590317777013,0.7348901477128659
+Cinema illegally hides message on a screen,Hiddens,Hiddens,0.04163168085213309,0.6564850903450002,0.3018832288028667
+Go thirds in pet turkey,Selectors,Hiddens,0.04641664374361219,0.4811408629261396,0.4724424933302481
+De Niro's acting decreased with Heat,Anagrams,Anagrams,0.5437493758227998,0.11876506834125025,0.33748555583594997
+Minute Cryptic finally solved (not against the clock),Anagrams,Anagrams,0.9343081005112918,0.055489610835045895,0.01020228865366237
+Original amigos each only halfway through paperwork,Selectors,Hiddens,0.2205633806798227,0.44393539234224966,0.33550122697792767
+Inside Stephanie's revealing skirt,Hiddens,Selectors,0.15750038035955796,0.41682104964191957,0.4256785699985224
+Eye doctor orders bifocals and heads back home,Selectors,Selectors,3.118165076822066e-05,0.037475742924633924,0.9624930754245978
+Stab piercing rogue's shield,Hiddens,Hiddens,0.15306887037419645,0.48744214196285707,0.3594889876629466
+Puzzle book's debut released by beaming eccentric,Anagrams,Anagrams,0.775258681022675,0.15100783607374932,0.07373348290357574
+Last five cappuccinos sent back in waves?,Hiddens,Hiddens,0.36259226908018,0.6267712007672196,0.010636530152600528
+Love us madly? Grab 1000 books!,Anagrams,Anagrams,0.9429245876785352,0.0430926022548817,0.013982810066583029
+Feel mature after clearing elm property,Selectors,Selectors,0.3367103254338692,0.19239028537972389,0.47089938918640695
+Perhaps backpacking close by Amsterdam?,Hiddens,Hiddens,0.05691358423449236,0.7785677905164676,0.16451862524904
+Play leapfrog across street drains - a fitting game?,Selectors,Selectors,0.09486224320311745,0.22661839392452512,0.6785193628723574
+Engineer rang unknown number when blowing a fuse,Anagrams,Anagrams,0.8060567823742304,0.1645147984165441,0.029428419209225464
+Fishnets that could assist fishing vessel's process by seconds,Selectors,Selectors,2.290688426658092e-06,0.11186037741450135,0.888137331897072
+Murder ingredient found in microwave?,Hiddens,Selectors,0.07154835745801832,0.4308153011752715,0.49763634136671026
+No coming back after shipwreck? That sucks,Anagrams,Anagrams,0.750648648792116,0.09346217804002042,0.15588917316786366
+Solitary Dancing Queen fan,Anagrams,Anagrams,0.9316280184395983,0.04076554566222057,0.027606435898181188
+Admit spending time with really odd seaman,Selectors,Selectors,0.03755553699318037,0.10212430168674924,0.8603201613200703
+Secretly ditch essay for game with mates?,Hiddens,Hiddens,0.1743179137871669,0.5144213153442545,0.31126077086857873
+Giant tortoise is tracked around narrow openings,Selectors,Selectors,4.9983453613415404e-05,0.2619702747107934,0.7379797418355932
+Eye rolling feels good occasionally,Selectors,Selectors,0.02517293404475646,0.0973881909842128,0.8774388749710307
+I love doing gymnastics with this extremely springy bunch?,Anagrams,Anagrams,0.9622176006633814,0.03230423364826706,0.005478165688351634
+Cold guys heartlessly shun quirky women,Anagrams,Anagrams,0.9466772642528831,0.03458309698891525,0.018739638758201532
+Edison half screwed a lightbulb?,Anagrams,Anagrams,0.8338780888469739,0.09655807813170705,0.06956383302131904
+Nineties freestyle icon known for his energetic MC work?,Anagrams,Anagrams,0.9384385366283284,0.059240682851587234,0.0023207805200843633
+Flat crustless half-size loaf,Selectors,Selectors,0.045691283369255514,0.1730002189971087,0.7813084976336357
+Business disinfected casino to conceal triple murder perhaps?,Hiddens,Hiddens,0.0001477027059961653,0.7909149691263034,0.20893732816770028
+Please... shaken not stirred,Anagrams,Anagrams,0.8719479580358726,0.09506510880241678,0.03298693316171052
+Humans maybe evolved armpits to conserve energy,Anagrams,Anagrams,0.9112558674542122,0.055655229562370775,0.03308890298341703

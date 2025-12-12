@@ -93,10 +93,10 @@ df["fodder_length"] = (
     .str.len()
 )
 
-# feature 2: number of words in clue. this had a similar modivaton-- perhaps
+# feature 2: number of words in fodder. this had a similar modivaton-- perhaps
 # more convoluted hints are characteristic of certain puzzles
 
-df["clue_word_count"] = df["clue"].astype(str).str.split().apply(len)
+df["fodder_word_count"] = df["fodder"].astype(str).str.split().apply(len)
 
 # features 3-5: these were the average cosine similarites to the bank of words
 
@@ -116,7 +116,7 @@ df["glove_selector"] = df["indicator"].apply(
 FEATURE_COLS = [
     "length",
     "fodder_length",
-    "clue_word_count",
+    "fodder_word_count",
     "glove_anagram",
     "glove_hidden",
     "glove_selector",
@@ -210,7 +210,7 @@ def extract_features(clue, indicator, length, fodder, definition):
     return np.array([[
         float(length),
         float(fodder_clean_len),
-        len(str(clue).split()),
+        len(str(fodder).split()),
         avg_similarity(indicator, ANAGRAM_WORDS),
         avg_similarity(indicator, HIDDEN_WORDS),
         avg_similarity(indicator, SELECTOR_WORDS)
@@ -258,46 +258,46 @@ except KeyboardInterrupt:
 
 
 # Printing Out the results of all of our training data for analytical use
-# commenting it out so it doesn't try to make a new file each time
-
+# we have it commented out to prevent duplicate downloads
 # results = []
 
 # for idx, row in df.iterrows():
-  #  clue = row["clue"]
-  #  indicator = row["indicator"]
-  #  fodder = row["fodder"]
-  #  definition = row["definition"]
-  #  length = row["length"]
-  #  true_cat = row["category"]
+#     clue = row["clue"]
+#     indicator = row["indicator"]
+#     fodder = row["fodder"]
+#     definition = row["definition"]
+#     length = row["length"]
+#     true_cat = row["category"]
 
-    # build features like training
-  #  x = extract_features(clue, indicator, length, fodder, definition)
-  #  x_scaled = scaler.transform(x)
+#     # build features like training
+#     x = extract_features(clue, indicator, length, fodder, definition)
+#     x_scaled = scaler.transform(x)
 
-    # get probabilities and predicted label
-  #  prob_vec = logreg.predict_proba(x_scaled)[0]
-  #  pred_id = np.argmax(prob_vec)
-  #  pred_cat = label_encoder.inverse_transform([pred_id])[0]
+#     # get probabilities and predicted label
+#     prob_vec = logreg.predict_proba(x_scaled)[0]
+#     pred_id = np.argmax(prob_vec)
+#     pred_cat = label_encoder.inverse_transform([pred_id])[0]
 
-  #  prob_dict = {
-  #      f"prob_{cat}": prob_vec[i]
-  #      for i, cat in enumerate(label_encoder.classes_)
-  #  }
+#     # store prob for each category
+#     prob_dict = {
+#         f"prob_{cat}": prob_vec[i]
+#         for i, cat in enumerate(label_encoder.classes_)
+#     }
 
-    # store results
-  #  results.append({
-  #      "clue": clue,
-  #      "true_category": true_cat,
-  #      "predicted_category": pred_cat,
-  #      **prob_dict
-  #  })
+#     # store results
+#     results.append({
+#         "clue": clue,
+#         "true_category": true_cat,
+#         "predicted_category": pred_cat,
+#         **prob_dict
+#     })
 
 # probs_df = pd.DataFrame(results)
 
 # print("\n----- Per-clue Probabilities -----")
 # print(probs_df.head())
 
-# Save to CSV
+# # Save to CSV
 # output_path = "clue_probabilities.csv"
 # probs_df.to_csv(output_path, index=False)
 # print(f"\nSaved per-clue probabilities to {output_path}")

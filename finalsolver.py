@@ -1,3 +1,4 @@
+import os
 from hidden import ngrams_of, filter_real_words as filter_hidden_words
 from anagram import do_anagram
 from selector import generate_all_selectors, filter_real_words as filter_selector_words
@@ -8,6 +9,8 @@ from glove import get_model
 
 model = get_model()
 
+# created a function to get the cosine similarity of 2 word vectorizations
+
 
 def cosine_sim(v1, v2):
     if v1 is None or v2 is None:
@@ -17,6 +20,8 @@ def cosine_sim(v1, v2):
         return 0.0
     return float(np.dot(v1, v2) / denom)
 
+# this would get the model (GloVe) vectorization of the word
+
 
 def get_vec(word):
     word = word.lower().strip()
@@ -24,13 +29,22 @@ def get_vec(word):
         return model[word]
     return None
 
+# the would compute the average vector for a defintion that had mulitple
+# words since many definitions had multiple words
+
 
 def avg_vec(text):
     tokens = text.lower().strip().split()
     vecs = [get_vec(t) for t in tokens if get_vec(t) is not None]
+
     if not vecs:
         return None
+
     return np.mean(vecs, axis=0)
+
+# this would then return the candidate whose vector has the highest
+# average cosine similarity of the defintion. the inputs are the definition
+# as a string then a list of candidate words (also strings)
 
 
 def best_definition_match(definition, candidates):
@@ -38,10 +52,16 @@ def best_definition_match(definition, candidates):
     if dvec is None:
         return None, {}
 
-    scores = {w: cosine_sim(dvec, get_vec(w)) for w in candidates}
+    scores = {}
+    for w in candidates:
+        wvec = get_vec(w)
+        scores[w] = cosine_sim(dvec, wvec)
+
     best_word = max(scores, key=scores.get)
     return best_word, scores
 
+
+# now the algorithm will run the respective solver when given the categroy
 
 def run_anagram_algorithm(fodder, length):
     words = do_anagram(fodder)
@@ -55,9 +75,11 @@ def run_hidden_algorithm(fodder, length):
 def run_selector_algorithm(fodder, length):
     return set(filter_selector_words(generate_all_selectors(fodder, length)))
 
+# created an interactive component
+
 
 def solve_clue():
-    print("=== Minute Cryptic Decrypter + Glove Meaning Matcher ===\n")
+    print("--- Minute Cryptic Decrypter ---\n")
 
     fodder = input("Enter the fodder: ").strip()
 
@@ -70,7 +92,7 @@ def solve_clue():
 
     category = input("Enter category (anagram / hidden / selector): ").lower()
 
-    # Generate candidates
+    # generate candidates
     if "anagram" in category:
         candidates = run_anagram_algorithm(fodder, length)
     elif "hidden" in category:
@@ -81,23 +103,23 @@ def solve_clue():
         print("Unknown category.")
         return
 
-    # NONE FOUND
+    # if it found nothing
     if not candidates:
         print("No English words found.")
         return
 
-    # EXACTLY ONE → DONE
+    # if it finds one answer it is done
     if len(candidates) == 1:
         print("Solution:", list(candidates)[0])
         return
 
-    # MULTIPLE → ask for definition
+    # if there are multiple candidates, we have to filter by/ask for the definition
     print(f"\nMultiple candidate words: {candidates}")
     definition = input("Enter the DEFINITION part of the clue: ").strip()
 
     best, scores = best_definition_match(definition, candidates)
 
-    print("\n=== Glove Scoring ===")
+    print("\n--- GloVe Scoring ---")
     print(f"Definition: {definition}")
     print(f"Best Match: {best}\n")
 
@@ -107,12 +129,9 @@ def solve_clue():
     print("\nFinal Answer:", best)
 
 
-if __name__ == "__main__":
-    # --- interactive mode (unchanged) ---
-    solve_clue()
-
-    # --- batch mode: run over testsolver.csv and save candidates + similarities ---
-    print("\n=== Running batch solver on testsolver.csv ===")
+# creating a function to get a csv of this algorithm run on all of the labeled/mislabeled data
+def run_batch_on_csv():
+    print("\n--- Running solver on testsolver.csv ---")
 
     ts_path = "testsolver.csv"
     out_ts_path = "testsolver_results.csv"
@@ -121,55 +140,66 @@ if __name__ == "__main__":
         ts_df = pd.read_csv(ts_path)
     except FileNotFoundError:
         print(f"Could not find {ts_path}. Skipping batch solve.\n")
-    else:
-        rows = []
+        return
 
-        # Expecting: Clue,Category,Fodder,Length,definition
-        for idx, row in ts_df.iterrows():
-            clue = row["Clue"]
-            category = row["Category"]
-            fodder = row["Fodder"]
-            length = int(row["Length"])
-            definition = row["Definition"]
+    required_cols = {"Clue", "Category", "Fodder", "Length", "Definition"}
+    missing = required_cols - set(ts_df.columns)
+    if missing:
+        print(f"Missing columns in {ts_path}: {missing}")
+        return
 
-            # choose algorithm
-            cat = category.lower()
-            if "anagram" in cat:
-                candidates = run_anagram_algorithm(fodder, length)
-            elif "hidden" in cat:
-                candidates = run_hidden_algorithm(fodder, length)
-            elif "selector" in cat:
-                candidates = run_selector_algorithm(fodder, length)
-            else:
-                candidates = set()
+    rows = []
 
-            if not candidates:
-                # still record something if no candidates found
-                rows.append({
-                    "clue": clue,
-                    "category": category,
-                    "fodder": fodder,
-                    "length": length,
-                    "definition": definition,
-                    "candidate": "",
-                    "similarity_to_definition": 0.0
-                })
-                continue
+    for idx, row in ts_df.iterrows():
+        clue = row["Clue"]
+        category = row["Category"]
+        fodder = row["Fodder"]
+        length = int(row["Length"])
+        definition = row["Definition"]
 
-            # score each candidate against the definition
-            _, scores = best_definition_match(definition, candidates)
+        # choose algorithm
+        cat = category.lower()
+        if "anagram" in cat:
+            candidates = run_anagram_algorithm(fodder, length)
+        elif "hidden" in cat:
+            candidates = run_hidden_algorithm(fodder, length)
+        elif "selector" in cat:
+            candidates = run_selector_algorithm(fodder, length)
+        else:
+            candidates = set()
 
-            for cand in candidates:
-                rows.append({
-                    "clue": clue,
-                    "category": category,
-                    "fodder": fodder,
-                    "length": length,
-                    "definition": definition,
-                    "candidate": cand,
-                    "similarity_to_definition": scores.get(cand, 0.0)
-                })
+        if not candidates:
+            rows.append({
+                "clue": clue,
+                "category": category,
+                "fodder": fodder,
+                "length": length,
+                "definition": definition,
+                "candidate": "",
+                "similarity_to_definition": 0.0
+            })
+            continue
 
-        out_df = pd.DataFrame(rows)
-        out_df.to_csv(out_ts_path, index=False)
-        print(f"Saved batch results to {out_ts_path}")
+        _, scores = best_definition_match(definition, candidates)
+
+        for cand in candidates:
+            rows.append({
+                "clue": clue,
+                "category": category,
+                "fodder": fodder,
+                "length": length,
+                "definition": definition,
+                "candidate": cand,
+                "similarity_to_definition": scores.get(cand, 0.0)
+            })
+
+    out_df = pd.DataFrame(rows)
+    out_ts_path = "testsolver_results.csv"
+    full_path = os.path.abspath(out_ts_path)
+    out_df.to_csv(out_ts_path, index=False)
+    print(f"Saved batch results to {full_path}")
+
+
+if __name__ == "__main__":
+    solve_clue()
+  #  run_batch_on_csv()
