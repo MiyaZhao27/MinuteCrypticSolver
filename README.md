@@ -6,7 +6,7 @@ This project utilizes python, GloVe, and various libraries to classify different
 
 This model is intended to be used to classify and generate solutions for Anagram, Hidden, and Selector type puzzles.
 
-Installation:
+## Installation:
 
 Ran with Python 3.12.6
 Scikit-Learn
@@ -18,52 +18,50 @@ gensim.downloader
 
 These are all free use programs. Many can be downloaded using: pip install [program name]
 
-Usage:
-
+## Usage:
 
 Files Explaination (More technical overview is found in code):
 
-anagram.py
+**anagram.py**
 Used to solve Anagram-type puzzles.
 
-selector.py	
+**selector.py**
 Used to solve Selector-type puzzles.
 
-hidden.py
+**hidden.py**
 Used to solve Hidden-type puzzles.
 
-Indicatorcracker.py
+**Indicatorcracker.py**
 Used to classify the type of cryptic clue. Reads input from user (clues and length of answer). Using training and test data and various features, the logistic regression assigns probabilities to the 3 different classes and selects the most likely puzzle-type.
 
-
-finalsolver.py
+**finalsolver.py**
 Reads input from user (clues and length of answer). When given a specific puzzle-type, the program will run the algorithm for that puzzle-type and generate a most optimal final answer.
 
-glove.py
+**glove.py**
 Loads a pre-trained GloVe vector (trained on 2B tweets)/ Used for calculating semantic similarity
  
-logistic_data.csv & testsolver.csv
+**logistic_data.csv & testsolver.csv**
 Contains data harvested from Minute Cryptic's YouTube Channel, used for Indicatorcracker.py training
 
 We utilized cross-validation to make up for data sparsity.
 
-Output Data:
+## Output Data:
 Data we collected which we utilized in a creation of a heat map for our final report. 
 
-In clue_probabiltiies we have the reported probability for each type of puzzle.
+In **clue_probabiltiies** we have the reported probability for each type of puzzle.
 
-In testsolver_results.csv we have the results for if our algorithms were able to come up with a correct solution.
+In **testsolver_results.csv** we have the results for if our algorithms were able to come up with a correct solution.
 
-In final_results.csv we have data on which part our model was success in (classification versus solving) and the specific nuances inside.
+In **final_results.csv** we have data on which part our model was success in (classification versus solving) and the specific nuances inside.
 
 Additionally, these files were helpful for understanding how close the classifications were to each other and how errors occured. For future students interested in advancing this dataset, in indicatorcracker.py we have commented out code that showcases how we extracted this data.
 
-Usage:
+## Main Usage:
 2 Main Files to run: indicatorcracker.py & finalsolver.py
 
-## Example Usage
+### Example Usage
 
-indicatorcracker.py:
+**indicatorcracker.py:**
 
 \## notates user input
 
@@ -82,7 +80,7 @@ Probabilities:  <br>
   Hiddens: 0.2694  <br>
   Selectors: 0.7254  <br>
 
-finalsolver.py:
+**finalsolver.py:**
 
 Enter the fodder: ## Provide a lipstick  <br>
 Enter the answer length: ## 5  <br>
