@@ -65,37 +65,37 @@ indicatorcracker.py:
 ## is user input
 
 ----- What Category is the Minute Cryptic Indicator? -----  <br>
-Enter the clue: ## Provide a lipstick sample for model
-Enter the indicator:  ## sample
-Enter the fodder words: ## Provide a lipstick
-Enter the definition: ## model
-Enter the solution length: ## 5
+Enter the clue: ## Provide a lipstick sample for model  <br>
+Enter the indicator:  ## sample  <br>
+Enter the fodder words: ## Provide a lipstick  <br>
+Enter the definition: ## model  <br>
+Enter the solution length: ## 5  <br>
 
------ Prediction Result -----
-Predicted Category: Selectors
+----- Prediction Result -----  <br>
+Predicted Category: Selectors  <br>
 
-Probabilities:
-  Anagrams: 0.0052
-  Hiddens: 0.2694
-  Selectors: 0.7254
+Probabilities:  <br>
+  Anagrams: 0.0052  <br>
+  Hiddens: 0.2694  <br>
+  Selectors: 0.7254  <br>
 
 finalsolver.py:
 
-Enter the fodder: ## Provide a lipstick
-Enter the answer length: ## 5
-Enter category (anagram / hidden / selector): ## hidden
+Enter the fodder: ## Provide a lipstick  <br>
+Enter the answer length: ## 5  <br>
+Enter category (anagram / hidden / selector): ## hidden  <br>
 
-Multiple candidate words: {'stick', 'ideal', 'provi'}
-Enter the DEFINITION part of the clue: model
+Multiple candidate words: {'stick', 'ideal', 'provi'}  <br>
+Enter the DEFINITION part of the clue: model  <br>
 
---- GloVe Scoring ---
-Definition: model
-Best Match: ideal
+--- GloVe Scoring ---  <br>
+Definition: model  <br>
+Best Match: ideal  <br>
 
-ideal           0.6242
-stick           0.3179
-provi           0.0000
+ideal           0.6242  <br>
+stick           0.3179  <br>
+provi           0.0000  <br>
 
-Final Answer: ideal
+Final Answer: ideal  <br>
 
 
