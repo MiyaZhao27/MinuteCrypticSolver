@@ -61,8 +61,11 @@ Additionally, these files were helpful for understanding how close the classific
 Usage:
 2 Main Files to run: indicatorcracker.py & finalsolver.py
 
+##Example Usage
+
 indicatorcracker.py:
-## is user input
+
+\## is user input
 
 ----- What Category is the Minute Cryptic Indicator? -----  <br>
 Enter the clue: ## Provide a lipstick sample for model  <br>
