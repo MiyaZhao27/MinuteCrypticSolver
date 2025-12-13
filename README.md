@@ -1,6 +1,6 @@
 # MinuteCrypticDecrypter
-Language and Computation Final Project <br>
-Amanda Huang, Gbemiga Salu, Miya Zhao <br>
+**Language and Computation Final Project** <br>
+*Amanda Huang, Gbemiga Salu, Miya Zhao* <br>
 
 **Summary:** This project utilizes python, GloVe, and various libraries to classify different types of Minute Cryptic Puzzles, and solve them based on their clues. It utilizes computational and lingustic concepts like n-grams, semantic embeddings, Multinomial Logistic Regression to generate and filter solutions to the Minute Cryptic.
 
@@ -65,7 +65,7 @@ Additionally, these files were helpful for understanding how close the classific
 
 **indicatorcracker.py:**
 
-*itallics notates user input*
+*italics notates user input*
 
 ----- What Category is the Minute Cryptic Indicator? -----  <br>
 Enter the clue: *Provide a lipstick sample for model*  <br>
