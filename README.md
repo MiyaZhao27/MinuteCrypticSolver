@@ -1,8 +1,8 @@
-# MinuteCrypticSolver
-Language and Computation Final Project -- Amanda Huang, Gbemiga Salu, Miya Zhao
+# MinuteCrypticDecrypter
+Language and Computation Final Project <br>
+Amanda Huang, Gbemiga Salu, Miya Zhao <br>
 
-Summary:
-This project utilizes python, GloVe, and various libraries to classify different types of Minute Cryptic Puzzles, and solve them based on their clues. It utilizes computational and lingustic concepts like n-grams, semantic embeddings, Multinomial Logistic Regression to generate and filter solutions to the Minute Cryptic.
+**Summary:** This project utilizes python, GloVe, and various libraries to classify different types of Minute Cryptic Puzzles, and solve them based on their clues. It utilizes computational and lingustic concepts like n-grams, semantic embeddings, Multinomial Logistic Regression to generate and filter solutions to the Minute Cryptic.
 
 This model is intended to be used to classify and generate solutions for Anagram, Hidden, and Selector type puzzles.
 
