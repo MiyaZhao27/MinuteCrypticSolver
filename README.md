@@ -8,19 +8,21 @@ This model is intended to be used to classify and generate solutions for Anagram
 
 ## Installation:
 
-Ran with Python 3.12.6
-Scikit-Learn
-Pandas
-Numpy
-Re
-Wordfreq
-gensim.downloader
+Ran with Python 3.12.6 <br>
+
+**Packages:** <br>
+Scikit-Learn <br>
+Pandas <br>
+Numpy <br>
+Re <br>
+Wordfreq <br>
+gensim.downloader <br>
 
 These are all free use programs. Many can be downloaded using: pip install [program name]
 
 ## Usage:
 
-Files Explaination (More technical overview is found in code):
+### Files Explaination (More technical overview is found in code):
 
 **anagram.py**
 Used to solve Anagram-type puzzles.
@@ -45,7 +47,7 @@ Contains data harvested from Minute Cryptic's YouTube Channel, used for Indicato
 
 We utilized cross-validation to make up for data sparsity.
 
-## Output Data:
+### Output Data:
 Data we collected which we utilized in a creation of a heat map for our final report. 
 
 In **clue_probabiltiies** we have the reported probability for each type of puzzle.
